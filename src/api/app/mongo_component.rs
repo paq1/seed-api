@@ -9,7 +9,7 @@ pub trait ClientMongoComponent {
             .expect("mongodb://localhost:27017");
 
         let mut client_option = ClientOptions::parse(uri).await?;
-        client_option.app_name = Some(String::from("Scheduler"));
+        client_option.app_name = Some(String::from("SeedApi"));
         Client::with_options(client_option)
     }
 
@@ -17,7 +17,7 @@ pub trait ClientMongoComponent {
         Ok(
             Self::connection()
                 .await?
-                .database("scheduler")
+                .database("seed-api")
                 .collection("tasks")
         )
     }
