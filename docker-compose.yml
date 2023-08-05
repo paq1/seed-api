@@ -1,0 +1,30 @@
+version: '3'
+
+# todo change all "seed" words by <whatever>
+
+services:
+  app:
+    image: ppaquin/seed-api:latest
+    ports:
+      - "8002:8000"
+    depends_on:
+      - db
+    environment:
+      - ROCKET_ADDRESS=0.0.0.0
+      - ROCKET_PORT=8000
+      - MONGO_URI=mongodb://db:27017
+    networks:
+      - seed-network
+  db:
+    image: mongo:latest
+    #    ports:
+    #      - "27017:27017"
+    volumes:
+      - seed_db_data:/data/db
+    networks:
+      - seed-network
+volumes:
+  seed_db_data:
+networks:
+  seed-network:
+#    driver: bridge
