@@ -26,8 +26,8 @@ jobs:
 
       - name: Tag image latest
         run: |
-          docker tag seed-api ppaquin/seed-api:latest
-          docker tag seed-api ppaquin/seed-api:${{github.sha}}
+          docker tag seed-api ${{ secrets.DOCKER_USERNAME }}/seed-api:latest
+          docker tag seed-api ${{ secrets.DOCKER_USERNAME }}/seed-api:${{github.sha}}
       - name: Login to docker hub
         uses: docker/login-action@v2
         with:
@@ -37,5 +37,5 @@ jobs:
 
       - name: push latest
         run: |
-          docker push ppaquin/seed-api:latest
-          docker push ppaquin/seed-api:${{github.sha}}
+          docker push ${{ secrets.DOCKER_USERNAME }}/seed-api:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/seed-api:${{github.sha}}
