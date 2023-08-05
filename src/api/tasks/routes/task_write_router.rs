@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::api::tasks::services::tasks_repository_mongo::TasksRepositoryMongo;
 use crate::core::tasks::entities::task::Task;
 use crate::core::tasks::services::tasks_repository::TasksRepository;
+use crate::models::tasks::commands::change_state_command::ChangeStateCommand;
 use crate::models::tasks::commands::create_task_command::CreateTaskCommand;
 use crate::models::tasks::views::json_data_response::JsonDataResponse;
 
@@ -20,10 +21,10 @@ pub async fn create(
         .insert_task(
             Task {
                 id: Uuid::new_v4().to_string(),
-                url: cmd.url,
-                http_method: cmd.http_method,
-                repetition_seconds: cmd.repetition_seconds,
-                state: "pending".to_string()
+                titre: cmd.titre,
+                description: cmd.description,
+                tags: cmd.tags,
+                state: "TODO".to_string()
             }
         )
         .await
@@ -38,14 +39,15 @@ pub async fn create(
         })
 }
 
-#[put("/tasks/commands/running/<id>")]
-pub async fn running_task(
+#[put("/tasks/commands/change-state/<id>", data="<change_state_command>")]
+pub async fn change_state_task(
     tasks_repository: &State<TasksRepositoryMongo>,
-    id: &str
+    id: &str,
+    change_state_command: Json<ChangeStateCommand>
 ) -> Result<Json<JsonDataResponse>, status::Custom<Json<JsonDataResponse>>> {
     tasks_repository
         .change_state(
-            id, "running".to_string()
+            id, change_state_command.0.state
         )
         .await
         .map(|_| Json(JsonDataResponse::new("OK")))
@@ -57,25 +59,4 @@ pub async fn running_task(
                 )
             )
         })
-}
-
-#[put("/tasks/commands/pending_all")]
-pub async fn pending_all_task(
-    tasks_repository: &State<TasksRepositoryMongo>,
-) -> Result<Json<JsonDataResponse>, status::Custom<Json<JsonDataResponse>>> {
-
-    let tasks = tasks_repository
-        .fetch_many()
-        .await
-        .into_iter()
-        .collect::<Vec<_>>();
-
-    for task in tasks.into_iter() {
-        tasks_repository
-            .change_state(task.id.as_str(), "pending".to_string())
-            .await
-            .expect("erreur lors d'un changement d'etat")
-    }
-
-    Ok(Json(JsonDataResponse::new("called")))
 }

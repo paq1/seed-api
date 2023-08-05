@@ -7,10 +7,10 @@ use crate::core::tasks::entities::task::Task;
 #[serde(crate = "rocket::serde")]
 pub struct TaskDbo {
     pub _id: ObjectId,
-    pub id: String,
-    pub url: String,
-    pub http_method: String,
-    pub repetition_seconds: Option<u32>,
+    pub id: String, // id metier
+    pub titre: String,
+    pub description: String,
+    pub tags: Vec<String>,
     pub state: String
 }
 
@@ -18,9 +18,9 @@ impl From<TaskDbo> for Task {
     fn from(value: TaskDbo) -> Self {
         Self {
             id: value.id,
-            url: value.url,
-            http_method: value.http_method,
-            repetition_seconds: value.repetition_seconds,
+            titre: value.titre,
+            description: value.description,
+            tags: value.tags,
             state: value.state
         }
     }

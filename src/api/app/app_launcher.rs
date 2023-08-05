@@ -2,7 +2,7 @@ use rocket::{Build, Rocket, routes};
 use crate::api::app::cors::CORS;
 
 use crate::api::tasks::routes::task_read_router::{hello, tasks};
-use crate::api::tasks::routes::task_write_router::{create, running_task, pending_all_task};
+use crate::api::tasks::routes::task_write_router::{create, change_state_task};
 use crate::api::tasks::services::tasks_repository_mongo::TasksRepositoryMongo;
 use crate::models::tasks::errors::custom::CustomError;
 
@@ -22,8 +22,7 @@ impl AppLauncher {
                             hello,
                             tasks,
                             create,
-                            running_task,
-                            pending_all_task
+                            change_state_task,
                         ]
                     )
             })
