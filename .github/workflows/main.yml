@@ -22,20 +22,20 @@ jobs:
 #          cargo build --verbose
 #          cargo test --verbose
       - name: Build image
-        run: docker build -t seed-api .
+        run: docker build -t $IMAGE_NAME .
 
       - name: Tag image latest
         run: |
-          docker tag seed-api ${{ secrets.DOCKER_USERNAME }}/seed-api:latest
-          docker tag seed-api ${{ secrets.DOCKER_USERNAME }}/seed-api:${{github.sha}}
+          docker tag seed-api $DOCKER_USERNAME/$IMAGE_NAME:latest
+          docker tag seed-api $DOCKER_USERNAME/$IMAGE_NAME:${{github.sha}}
       - name: Login to docker hub
         uses: docker/login-action@v2
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
 
       - name: push latest
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/seed-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/seed-api:${{github.sha}}
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
+          docker push $DOCKER_USERNAME/$IMAGE_NAME:${{github.sha}}
